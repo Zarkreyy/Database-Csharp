@@ -1,4 +1,12 @@
-﻿using System;
+﻿/*
+ * Projet : Projet base de données en C#
+ * Description : Classe permettant de gérer la connexion à une base de données MySQL.
+ * Date de création : 30/03/2023
+ * Auteur : Rémy / Zarkrey
+ * Version : 1.0
+ */
+
+using System;
 using MySql.Data.MySqlClient;
 
 namespace DatabaseCsharp.sql
@@ -33,7 +41,7 @@ namespace DatabaseCsharp.sql
         /// Récupère la connexion à la base de données. Si la connexion n'est pas encore établie ou si elle est fermée, elle est ouverte.
         /// </summary>
         /// <returns>La connexion à la base de données.</returns>
-        public MySqlConnection GetConnection()
+        public MySqlConnection GetSqlConnection()
         {
             if (Connection == null) Connect();
             else if (Connection.State != System.Data.ConnectionState.Open) Connection.Open();

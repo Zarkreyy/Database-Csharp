@@ -1,4 +1,12 @@
-﻿using MySql.Data.MySqlClient;
+﻿/*
+ * Projet : Projet base de données en C#
+ * Description : Classe Représentant les informations de connexion à une base de données MySQL.
+ * Date de création : 30/03/2023
+ * Auteur : Rémy / Zarkrey
+ * Version : 1.0
+ */
+
+using MySql.Data.MySqlClient;
 
 namespace DatabaseCsharp.sql
 {
