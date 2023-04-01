@@ -6,7 +6,9 @@
  * Version : 1.0
  */
 
-using MySql.Data.MySqlClient;
+//using MySql.Data.MySqlClient;
+using MySqlConnector;
+
 
 namespace DatabaseCsharp.sql
 {

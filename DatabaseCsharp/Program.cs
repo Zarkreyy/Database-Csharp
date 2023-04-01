@@ -19,7 +19,7 @@ namespace DatabaseCsharp
             // Exécute une requête qui retourne des données
             SqlResult sqlResult = Database.ExecuteReader(
                 "SELECT * FROM gos_mc_users WHERE idMcUser = ? AND username = ?",
-                new List<object> { 2, "Zarkrey" }
+                new List<object> { 1, "Zarkrey" }
             );
 
             // Affiche toutes les données retournées par la requête
