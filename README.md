@@ -4,7 +4,9 @@ Ce projet consiste en une classe statique permettant la gestion des connexions �
 
 ## Utilisation
 
-Pour utiliser cette classe, il suffit d'installer la bibliothèque `MySql.Data` de MySQL à l'aide du gestionnaire de packages NuGet.
+Pour utiliser cette classe, il suffit d'installer la librairie `MySqlConnector` à l'aide du gestionnaire de packages NuGet et de copier/coller le dossier `sql`.
+
+Note: La librairie `MySqlConnector` est plus performante et supporte plus de plateforme (notament Xamarin) que `MySql.Data`
 
 ### Connexion à la base de données
 
