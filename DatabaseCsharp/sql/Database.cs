@@ -3,7 +3,7 @@
  * Description : Classe statique permettant la gestion des connexions à la base de données MySQL ainsi que l'exécution des requêtes SQL.
  * Date de création : 30/03/2023
  * Auteur : Rémy / Zarkrey
- * Version : 1.0
+ * Version : 1.1.0
  */
 
 using System.Collections.Generic;
@@ -42,21 +42,11 @@ namespace DatabaseCsharp.sql
         public static SqlResult ExecuteReader(string query, List<object> parameters = null)
         {
             MySqlConnection sqlConnection = DatabaseConnection.GetSqlConnection();
-            MySqlCommand sqlCommand = new MySqlCommand(query, sqlConnection);
-            if (parameters != null)
+            using (MySqlCommand sqlCommand = new MySqlCommand(query, sqlConnection))
             {
-                int parameterCount = 1;
-                foreach (object parameter in parameters)
-                {
-                    sqlCommand.Parameters.AddWithValue($"@param{parameterCount}", parameter);
-                    parameterCount++;
-                }
+                BindParam(sqlCommand, parameters);
+                return new SqlResult(sqlCommand.ExecuteReader());
             }
-
-            MySqlDataReader sqlDataReader = sqlCommand.ExecuteReader();
-            SqlResult sqlResult = new SqlResult(sqlDataReader);
-            sqlDataReader.Close();
-            return sqlResult;
         }
 
         /// <summary>
@@ -67,19 +57,10 @@ namespace DatabaseCsharp.sql
         /// <returns>Le nombre de lignes affectées</returns>
         public static int ExecuteUpdate(string query, List<object> parameters = null)
         {
-            using (MySqlConnection sqlConnection = DatabaseConnection.GetSqlConnection())
+            MySqlConnection sqlConnection = DatabaseConnection.GetSqlConnection();
             using (MySqlCommand sqlCommand = new MySqlCommand(query, sqlConnection))
             {
-                if (parameters != null)
-                {
-                    int parameterCount = 1;
-                    foreach (object parameter in parameters)
-                    {
-                        sqlCommand.Parameters.AddWithValue($"@param{parameterCount}", parameter);
-                        parameterCount++;
-                    }
-                }
-
+                BindParam(sqlCommand, parameters);
                 return sqlCommand.ExecuteNonQuery();
             }
         }
@@ -90,6 +71,17 @@ namespace DatabaseCsharp.sql
         public static void Close()
         {
             DatabaseConnection?.Close();
+        }
+
+        private static void BindParam(MySqlCommand sqlCommand, List<object> parameters)
+        {
+            if (parameters == null) return;
+            int parameterCount = 1;
+            foreach (object parameter in parameters)
+            {
+                sqlCommand.Parameters.AddWithValue($"@param{parameterCount}", parameter);
+                parameterCount++;
+            }
         }
     }
 }

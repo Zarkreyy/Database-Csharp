@@ -3,7 +3,7 @@
  * Description : Classe Représentant les informations de connexion à une base de données MySQL.
  * Date de création : 30/03/2023
  * Auteur : Rémy / Zarkrey
- * Version : 1.0
+ * Version : 1.1.0
  */
 
 using MySqlConnector;
@@ -20,7 +20,7 @@ namespace DatabaseCsharp.sql
         private readonly string _user;
         private readonly string _password;
         private readonly string _databaseName;
-        private readonly int _port;
+        private readonly uint _port;
 
         /// <summary>
         /// Initialise une nouvelle instance de la classe DatabaseCredentials avec les informations de connexion fournies.
@@ -30,7 +30,7 @@ namespace DatabaseCsharp.sql
         /// <param name="password">Mot de passe MySQL</param>
         /// <param name="databaseName">Nom de la base de données MySQL</param>
         /// <param name="port">Numéro de port pour la connexion à MySQL</param>
-        public DatabaseCredentials(string host, string user, string password, string databaseName, int port)
+        public DatabaseCredentials(string host, string user, string password, string databaseName, uint port)
         {
             _host = host;
             _user = user;
@@ -62,7 +62,7 @@ namespace DatabaseCsharp.sql
         /// <summary>
         /// Obtient le numéro de port pour la connexion à MySQL.
         /// </summary>
-        public int Port => _port;
+        public uint Port => _port;
 
         /// <summary>
         /// Retourne une chaîne de connexion formatée pour la base de données MySQL en utilisant les informations de connexion fournies.
@@ -76,7 +76,8 @@ namespace DatabaseCsharp.sql
                 UserID = User,
                 Password = Password,
                 Database = DatabaseName,
-                Port = (uint)Port
+                Port = Port,
+                AllowZeroDateTime = true
             };
             return builder.ConnectionString;
         }

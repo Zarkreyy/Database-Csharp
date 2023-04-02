@@ -3,7 +3,7 @@
  * Description : Classe permettant de gérer la connexion à une base de données MySQL.
  * Date de création : 30/03/2023
  * Auteur : Rémy / Zarkrey
- * Version : 1.0
+ * Version : 1.1.0
  */
 
 using System;
