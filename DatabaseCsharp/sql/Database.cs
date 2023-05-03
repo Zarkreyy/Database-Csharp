@@ -22,15 +22,10 @@ namespace DatabaseCsharp.sql
         private const string DatabaseName = "gos";
         private const int Port = 3306;
 
-        private static ConnexionHandler ConnexionHandler { get; set; }
-
         /// <summary>
         /// Établit une connexion à la base de données.
         /// </summary>
-        static Database()
-        {
-            ConnexionHandler = new ConnexionHandler(new DatabaseCredentials(Host, User, Password, DatabaseName, Port));
-        }
+        private static ConnexionHandler ConnexionHandler { get; } = new ConnexionHandler(new DatabaseCredentials(Host, User, Password, DatabaseName, Port));
 
         /// <summary>
         /// Permet d'exécuter une requête SQL de type SELECT et de renvoyer les résultats sous forme d'objet SqlResult.
