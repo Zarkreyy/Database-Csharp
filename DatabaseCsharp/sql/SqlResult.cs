@@ -20,7 +20,7 @@ namespace DatabaseCsharp.sql
     /// </summary>
     public class SqlResult
     {
-        private readonly Dictionary<string, List<object>> _values;
+        private Dictionary<string, List<object>> Values { get; }
 
         /// <summary>
         /// Constructeur de la classe SqlResult sans paramètre.
@@ -35,7 +35,7 @@ namespace DatabaseCsharp.sql
         /// <param name="sqlDataReader">Le MySqlDataReader contenant les résultats de la requête SQL</param>
         public SqlResult(MySqlDataReader sqlDataReader)
         {
-            _values = new Dictionary<string, List<object>>();
+            Values = new Dictionary<string, List<object>>();
             if (sqlDataReader == null) return;
             if (sqlDataReader.Read())
             {
@@ -43,7 +43,7 @@ namespace DatabaseCsharp.sql
                 {
                     string rowLabel = sqlDataReader.GetName(columnIndex);
                     object rowItem = sqlDataReader.GetValue(columnIndex);
-                    _values.Add(rowLabel, new List<object>() { rowItem });
+                    Values.Add(rowLabel, new List<object>() { rowItem });
                 }
             }
 
@@ -53,14 +53,12 @@ namespace DatabaseCsharp.sql
                 {
                     string rowLabel = sqlDataReader.GetName(columnIndex);
                     object rowItem = sqlDataReader.GetValue(columnIndex);
-                    _values[rowLabel].Add(rowItem);
+                    Values[rowLabel].Add(rowItem);
                 }
             }
 
             sqlDataReader.Close();
         }
-
-        private Dictionary<string, List<object>> Values => _values;
 
         /// <summary>
         /// Récupère la valeur d'un champ à partir de son index de colonne

@@ -22,15 +22,14 @@ namespace DatabaseCsharp.sql
         private const string DatabaseName = "gos";
         private const int Port = 3306;
 
-        private static readonly DatabaseConnection DatabaseConnection;
+        private static ConnexionHandler ConnexionHandler { get; set; }
 
         /// <summary>
         /// Établit une connexion à la base de données.
         /// </summary>
         static Database()
         {
-            DatabaseConnection =
-                new DatabaseConnection(new DatabaseCredentials(Host, User, Password, DatabaseName, Port));
+            ConnexionHandler = new ConnexionHandler(new DatabaseCredentials(Host, User, Password, DatabaseName, Port));
         }
 
         /// <summary>
@@ -38,10 +37,11 @@ namespace DatabaseCsharp.sql
         /// </summary>
         /// <param name="query">La requête SQL à exécuter.</param>
         /// <param name="parameters">Une liste d'objets qui contiennent les paramètres pour la requête SQL.</param>
+        /// 
         /// <returns>Un objet SqlResult contenant les résultats de la requête.</returns>
         public static SqlResult ExecuteReader(string query, List<object> parameters = null)
         {
-            MySqlConnection sqlConnection = DatabaseConnection.GetSqlConnection();
+            MySqlConnection sqlConnection = ConnexionHandler.Connection;
             using (MySqlCommand sqlCommand = new MySqlCommand(query, sqlConnection))
             {
                 BindParam(sqlCommand, parameters);
@@ -57,7 +57,7 @@ namespace DatabaseCsharp.sql
         /// <returns>Le nombre de lignes affectées</returns>
         public static int ExecuteUpdate(string query, List<object> parameters = null)
         {
-            MySqlConnection sqlConnection = DatabaseConnection.GetSqlConnection();
+            MySqlConnection sqlConnection = ConnexionHandler.Connection;
             using (MySqlCommand sqlCommand = new MySqlCommand(query, sqlConnection))
             {
                 BindParam(sqlCommand, parameters);
@@ -70,7 +70,7 @@ namespace DatabaseCsharp.sql
         /// </summary>
         public static void Close()
         {
-            DatabaseConnection?.Close();
+            ConnexionHandler?.Close();
         }
 
         private static void BindParam(MySqlCommand sqlCommand, List<object> parameters)
