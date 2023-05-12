@@ -3,7 +3,7 @@
  * Description : Classe Représentant les informations de connexion à une base de données MySQL.
  * Date de création : 30/03/2023
  * Auteur : Rémy / Zarkrey
- * Version : 1.1.0
+ * Version : 1.1.1
  */
 
 using MySqlConnector;

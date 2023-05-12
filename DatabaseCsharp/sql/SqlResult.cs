@@ -3,7 +3,7 @@
  * Description : Classe représentant les résultats d'une requête SQL.
  * Date de création : 30/03/2023
  * Auteur : Rémy / Zarkrey
- * Version : 1.1.0
+ * Version : 1.1.1
  */
 
 using System;
@@ -115,15 +115,7 @@ namespace DatabaseCsharp.sql
         /// <exception cref="InvalidCastException">Lancée lorsque la valeur du champ ne peut pas être convertie au type T. L'exception contiendra des détails sur le type réel de l'objet et le type auquel la conversion a été tentée.</exception>
         public T Get<T>(int columnIndex)
         {
-            object value = Get(columnIndex);
-            try
-            {
-                return (T)value;
-            }
-            catch (InvalidCastException)
-            {
-                throw new InvalidCastException("Unable to cast " + value.GetType().Name + " to " + typeof(T).Name);
-            }
+            return Cast<T>(Get(columnIndex));
         }
 
         /// <summary>
@@ -135,15 +127,7 @@ namespace DatabaseCsharp.sql
         /// <exception cref="InvalidCastException">Lancée lorsque la valeur du champ ne peut pas être convertie au type T. L'exception contiendra des détails sur le type réel de l'objet et le type auquel la conversion a été tentée.</exception>
         public T Get<T>(string columnLabel)
         {
-            object value = Get(columnLabel);
-            try
-            {
-                return (T)value;
-            }
-            catch (InvalidCastException)
-            {
-                throw new InvalidCastException("Unable to cast " + value.GetType().Name + " to " + typeof(T).Name);
-            }
+            return Cast<T>(Get(columnLabel));
         }
 
         /// <summary>
@@ -156,15 +140,7 @@ namespace DatabaseCsharp.sql
         /// <exception cref="InvalidCastException">Lancée lorsque la valeur du champ ne peut pas être convertie au type T. L'exception contiendra des détails sur le type réel de l'objet et le type auquel la conversion a été tentée.</exception>
         public T Get<T>(int rowIndex, int columnIndex)
         {
-            object value = Get(rowIndex, columnIndex);
-            try
-            {
-                return (T)value;
-            }
-            catch (InvalidCastException)
-            {
-                throw new InvalidCastException("Unable to cast " + value.GetType().Name + " to " + typeof(T).Name);
-            }
+            return Cast<T>(Get(rowIndex, columnIndex));
         }
 
         /// <summary>
@@ -177,7 +153,18 @@ namespace DatabaseCsharp.sql
         /// <exception cref="InvalidCastException">Lancée lorsque la valeur du champ ne peut pas être convertie au type T. L'exception contiendra des détails sur le type réel de l'objet et le type auquel la conversion a été tentée.</exception>
         public T Get<T>(int rowIndex, string columnLabel)
         {
-            object value = Get(rowIndex, columnLabel);
+            return Cast<T>(Get(rowIndex, columnLabel));
+        }
+
+        /// <summary>
+        /// Convertit la valeur en type T et lance une exception détaillée si la conversion échoue.
+        /// </summary>
+        /// <typeparam name="T">Le type dans lequel la valeur doit être convertie.</typeparam>
+        /// <param name="value">La valeur à convertir en type T.</param>
+        /// <returns>La valeur convertie en type T.</returns>
+        /// <exception cref="InvalidCastException">Lancée lorsque la valeur du champ ne peut pas être convertie au type T. L'exception contiendra des détails sur le type réel de l'objet et le type auquel la conversion a été tentée.</exception>
+        private T Cast<T>(object value)
+        {
             try
             {
                 return (T)value;
