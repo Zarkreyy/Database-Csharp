@@ -65,9 +65,9 @@ namespace DatabaseCsharp.sql
         /// </summary>
         /// <param name="columnIndex">L'index de colonne du champ à récupérer</param>
         /// <returns>La valeur du champ</returns>
-        public object GetObject(int columnIndex)
+        public object Get(int columnIndex)
         {
-            return GetObject(0, columnIndex);
+            return Get(0, columnIndex);
         }
 
         /// <summary>
@@ -75,9 +75,9 @@ namespace DatabaseCsharp.sql
         /// </summary>
         /// <param name="columnLabel">Le nom de colonne du champ à récupérer</param>
         /// <returns>La valeur du champ</returns>
-        public object GetObject(string columnLabel)
+        public object Get(string columnLabel)
         {
-            return GetObject(0, columnLabel);
+            return Get(0, columnLabel);
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace DatabaseCsharp.sql
         /// <param name="rowIndex">L'index de ligne du champ à récupérer</param>
         /// <param name="columnIndex">L'index de colonne du champ à récupérer</param>
         /// <returns>La valeur du champ</returns>
-        public object GetObject(int rowIndex, int columnIndex)
+        public object Get(int rowIndex, int columnIndex)
         {
             return GetRowCount() > rowIndex && GetColumnCount() > columnIndex
                 ? Values.Values.ElementAt(columnIndex)[rowIndex]
@@ -99,9 +99,93 @@ namespace DatabaseCsharp.sql
         /// <param name="rowIndex">L'index de ligne du champ à récupérer</param>
         /// <param name="columnLabel">Le nom de colonne du champ à récupérer</param>
         /// <returns>La valeur du champ</returns>
-        public object GetObject(int rowIndex, string columnLabel)
+        public object Get(int rowIndex, string columnLabel)
         {
-            return GetRowCount() > rowIndex && Values.ContainsKey(columnLabel) ? Values[columnLabel][rowIndex] : null;
+            return GetRowCount() > rowIndex && Values.ContainsKey(columnLabel)
+                ? Values[columnLabel][rowIndex]
+                : null;
+        }
+
+        /// <summary>
+        /// Récupère la valeur d'un champ à partir de son index de colonne, et tente de la convertir au type spécifié.
+        /// </summary>
+        /// <typeparam name="T">Le type dans lequel la valeur du champ doit être convertie.</typeparam>
+        /// <param name="columnIndex">L'index de colonne du champ à récupérer</param>
+        /// <returns>La valeur du champ, convertie en type T.</returns>
+        /// <exception cref="InvalidCastException">Lancée lorsque la valeur du champ ne peut pas être convertie au type T. L'exception contiendra des détails sur le type réel de l'objet et le type auquel la conversion a été tentée.</exception>
+        public T Get<T>(int columnIndex)
+        {
+            object value = Get(columnIndex);
+            try
+            {
+                return (T)value;
+            }
+            catch (InvalidCastException)
+            {
+                throw new InvalidCastException("Unable to cast " + value.GetType().Name + " to " + typeof(T).Name);
+            }
+        }
+
+        /// <summary>
+        /// Récupère la valeur d'un champ à partir de son nom de colonne, et tente de la convertir au type spécifié.
+        /// </summary>
+        /// <typeparam name="T">Le type dans lequel la valeur du champ doit être convertie.</typeparam>
+        /// <param name="columnLabel">Le nom de colonne du champ à récupérer</param>
+        /// <returns>La valeur du champ, convertie en type T.</returns>
+        /// <exception cref="InvalidCastException">Lancée lorsque la valeur du champ ne peut pas être convertie au type T. L'exception contiendra des détails sur le type réel de l'objet et le type auquel la conversion a été tentée.</exception>
+        public T Get<T>(string columnLabel)
+        {
+            object value = Get(columnLabel);
+            try
+            {
+                return (T)value;
+            }
+            catch (InvalidCastException)
+            {
+                throw new InvalidCastException("Unable to cast " + value.GetType().Name + " to " + typeof(T).Name);
+            }
+        }
+
+        /// <summary>
+        /// Récupère la valeur d'un champ à partir de son index de colonne et de son index de ligne, et tente de la convertir au type spécifié.
+        /// </summary>
+        /// <typeparam name="T">Le type dans lequel la valeur du champ doit être convertie.</typeparam>
+        /// <param name="rowIndex">L'index de ligne du champ à récupérer</param>
+        /// <param name="columnIndex">L'index de colonne du champ à récupérer</param>
+        /// <returns>La valeur du champ, convertie en type T.</returns>
+        /// <exception cref="InvalidCastException">Lancée lorsque la valeur du champ ne peut pas être convertie au type T. L'exception contiendra des détails sur le type réel de l'objet et le type auquel la conversion a été tentée.</exception>
+        public T Get<T>(int rowIndex, int columnIndex)
+        {
+            object value = Get(rowIndex, columnIndex);
+            try
+            {
+                return (T)value;
+            }
+            catch (InvalidCastException)
+            {
+                throw new InvalidCastException("Unable to cast " + value.GetType().Name + " to " + typeof(T).Name);
+            }
+        }
+
+        /// <summary>
+        /// Récupère la valeur d'un champ à partir de son nom de colonne et de son index de ligne, et tente de la convertir au type spécifié.
+        /// </summary>
+        /// <typeparam name="T">Le type dans lequel la valeur du champ doit être convertie.</typeparam>
+        /// <param name="rowIndex">L'index de la ligne du champ à récupérer.</param>
+        /// <param name="columnLabel">Le nom de colonne du champ à récupérer.</param>
+        /// <returns>La valeur du champ, convertie en type T.</returns>
+        /// <exception cref="InvalidCastException">Lancée lorsque la valeur du champ ne peut pas être convertie au type T. L'exception contiendra des détails sur le type réel de l'objet et le type auquel la conversion a été tentée.</exception>
+        public T Get<T>(int rowIndex, string columnLabel)
+        {
+            object value = Get(rowIndex, columnLabel);
+            try
+            {
+                return (T)value;
+            }
+            catch (InvalidCastException)
+            {
+                throw new InvalidCastException("Unable to cast " + value.GetType().Name + " to " + typeof(T).Name);
+            }
         }
 
         /// <summary>
@@ -175,644 +259,14 @@ namespace DatabaseCsharp.sql
                 string row = "[";
                 for (int columnIndex = 0; columnIndex < GetColumnCount() - 1; columnIndex++)
                 {
-                    row += GetObject(rowIndex, columnIndex) + ", ";
+                    row += Get(rowIndex, columnIndex) + ", ";
                 }
 
-                row += GetObject(rowIndex, GetColumnCount() - 1) + "]";
+                row += Get(rowIndex, GetColumnCount() - 1) + "]";
                 lines.Add(row);
             }
 
             foreach (string line in lines) Console.WriteLine(line);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son index de colonne
-        /// </summary>
-        /// <param name="columnIndex">L'index de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public string GetString(int columnIndex)
-        {
-            return (string)GetObject(columnIndex);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son nom de colonne
-        /// </summary>
-        /// <param name="columnLabel">Le nom de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public string GetString(string columnLabel)
-        {
-            return (string)GetObject(columnLabel);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son index de colonne et de son index de ligne
-        /// </summary>
-        /// <param name="rowIndex">L'index de ligne du champ à récupérer</param>
-        /// <param name="columnIndex">L'index de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public string GetString(int rowIndex, int columnIndex)
-        {
-            return (string)GetObject(rowIndex, columnIndex);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son nom de colonne et de son index de ligne
-        /// </summary>
-        /// <param name="rowIndex">L'index de ligne du champ à récupérer</param>
-        /// <param name="columnLabel">Le nom de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public string GetString(int rowIndex, string columnLabel)
-        {
-            return (string)GetObject(rowIndex, columnLabel);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son index de colonne
-        /// </summary>
-        /// <param name="columnIndex">L'index de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public char GetChar(int columnIndex)
-        {
-            return (char)GetObject(columnIndex);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son nom de colonne
-        /// </summary>
-        /// <param name="columnLabel">Le nom de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public char GetChar(string columnLabel)
-        {
-            return (char)GetObject(columnLabel);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son index de colonne et de son index de ligne
-        /// </summary>
-        /// <param name="rowIndex">L'index de ligne du champ à récupérer</param>
-        /// <param name="columnIndex">L'index de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public char GetChar(int rowIndex, int columnIndex)
-        {
-            return (char)GetObject(rowIndex, columnIndex);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son nom de colonne et de son index de ligne
-        /// </summary>
-        /// <param name="rowIndex">L'index de ligne du champ à récupérer</param>
-        /// <param name="columnLabel">Le nom de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public char GetChar(int rowIndex, string columnLabel)
-        {
-            return (char)GetObject(rowIndex, columnLabel);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son index de colonne
-        /// </summary>
-        /// <param name="columnIndex">L'index de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public bool GetBool(int columnIndex)
-        {
-            return (bool)GetObject(columnIndex);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son nom de colonne
-        /// </summary>
-        /// <param name="columnLabel">Le nom de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public bool GetBool(string columnLabel)
-        {
-            return (bool)GetObject(columnLabel);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son index de colonne et de son index de ligne
-        /// </summary>
-        /// <param name="rowIndex">L'index de ligne du champ à récupérer</param>
-        /// <param name="columnIndex">L'index de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public bool GetBool(int rowIndex, int columnIndex)
-        {
-            return (bool)GetObject(rowIndex, columnIndex);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son nom de colonne et de son index de ligne
-        /// </summary>
-        /// <param name="rowIndex">L'index de ligne du champ à récupérer</param>
-        /// <param name="columnLabel">Le nom de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public bool GetBool(int rowIndex, string columnLabel)
-        {
-            return (bool)GetObject(rowIndex, columnLabel);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son index de colonne
-        /// </summary>
-        /// <param name="columnIndex">L'index de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public long GetLong(int columnIndex)
-        {
-            return (long)GetObject(columnIndex);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son nom de colonne
-        /// </summary>
-        /// <param name="columnLabel">Le nom de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public long GetLong(string columnLabel)
-        {
-            return (long)GetObject(columnLabel);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son index de colonne et de son index de ligne
-        /// </summary>
-        /// <param name="rowIndex">L'index de ligne du champ à récupérer</param>
-        /// <param name="columnIndex">L'index de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public long GetLong(int rowIndex, int columnIndex)
-        {
-            return (long)GetObject(rowIndex, columnIndex);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son nom de colonne et de son index de ligne
-        /// </summary>
-        /// <param name="rowIndex">L'index de ligne du champ à récupérer</param>
-        /// <param name="columnLabel">Le nom de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public long GetLong(int rowIndex, string columnLabel)
-        {
-            return (long)GetObject(rowIndex, columnLabel);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son index de colonne
-        /// </summary>
-        /// <param name="columnIndex">L'index de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public int GetInt(int columnIndex)
-        {
-            return (int)GetObject(columnIndex);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son nom de colonne
-        /// </summary>
-        /// <param name="columnLabel">Le nom de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public int GetInt(string columnLabel)
-        {
-            return (int)GetObject(columnLabel);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son index de colonne et de son index de ligne
-        /// </summary>
-        /// <param name="rowIndex">L'index de ligne du champ à récupérer</param>
-        /// <param name="columnIndex">L'index de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public int GetInt(int rowIndex, int columnIndex)
-        {
-            return (int)GetObject(rowIndex, columnIndex);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son nom de colonne et de son index de ligne
-        /// </summary>
-        /// <param name="rowIndex">L'index de ligne du champ à récupérer</param>
-        /// <param name="columnLabel">Le nom de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public int GetInt(int rowIndex, string columnLabel)
-        {
-            return (int)GetObject(rowIndex, columnLabel);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son index de colonne
-        /// </summary>
-        /// <param name="columnIndex">L'index de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public short GetShort(int columnIndex)
-        {
-            return (short)GetObject(columnIndex);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son nom de colonne
-        /// </summary>
-        /// <param name="columnLabel">Le nom de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public short GetShort(string columnLabel)
-        {
-            return (short)GetObject(columnLabel);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son index de colonne et de son index de ligne
-        /// </summary>
-        /// <param name="rowIndex">L'index de ligne du champ à récupérer</param>
-        /// <param name="columnIndex">L'index de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public short GetShort(int rowIndex, int columnIndex)
-        {
-            return (short)GetObject(rowIndex, columnIndex);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son nom de colonne et de son index de ligne
-        /// </summary>
-        /// <param name="rowIndex">L'index de ligne du champ à récupérer</param>
-        /// <param name="columnLabel">Le nom de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public short GetShort(int rowIndex, string columnLabel)
-        {
-            return (short)GetObject(rowIndex, columnLabel);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son index de colonne
-        /// </summary>
-        /// <param name="columnIndex">L'index de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public sbyte GetSByte(int columnIndex)
-        {
-            return (sbyte)GetObject(columnIndex);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son nom de colonne
-        /// </summary>
-        /// <param name="columnLabel">Le nom de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public sbyte GetSByte(string columnLabel)
-        {
-            return (sbyte)GetObject(columnLabel);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son index de colonne et de son index de ligne
-        /// </summary>
-        /// <param name="rowIndex">L'index de ligne du champ à récupérer</param>
-        /// <param name="columnIndex">L'index de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public sbyte GetSByte(int rowIndex, int columnIndex)
-        {
-            return (sbyte)GetObject(rowIndex, columnIndex);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son nom de colonne et de son index de ligne
-        /// </summary>
-        /// <param name="rowIndex">L'index de ligne du champ à récupérer</param>
-        /// <param name="columnLabel">Le nom de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public sbyte GetSByte(int rowIndex, string columnLabel)
-        {
-            return (sbyte)GetObject(rowIndex, columnLabel);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son index de colonne
-        /// </summary>
-        /// <param name="columnIndex">L'index de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public ulong GetULong(int columnIndex)
-        {
-            return (ulong)GetObject(columnIndex);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son nom de colonne
-        /// </summary>
-        /// <param name="columnLabel">Le nom de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public ulong GetULong(string columnLabel)
-        {
-            return (ulong)GetObject(columnLabel);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son index de colonne et de son index de ligne
-        /// </summary>
-        /// <param name="rowIndex">L'index de ligne du champ à récupérer</param>
-        /// <param name="columnIndex">L'index de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public ulong GetULong(int rowIndex, int columnIndex)
-        {
-            return (ulong)GetObject(rowIndex, columnIndex);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son nom de colonne et de son index de ligne
-        /// </summary>
-        /// <param name="rowIndex">L'index de ligne du champ à récupérer</param>
-        /// <param name="columnLabel">Le nom de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public ulong GetULong(int rowIndex, string columnLabel)
-        {
-            return (ulong)GetObject(rowIndex, columnLabel);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son index de colonne
-        /// </summary>
-        /// <param name="columnIndex">L'index de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public uint GetUInt(int columnIndex)
-        {
-            return (uint)GetObject(columnIndex);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son nom de colonne
-        /// </summary>
-        /// <param name="columnLabel">Le nom de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public uint GetUInt(string columnLabel)
-        {
-            return (uint)GetObject(columnLabel);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son index de colonne et de son index de ligne
-        /// </summary>
-        /// <param name="rowIndex">L'index de ligne du champ à récupérer</param>
-        /// <param name="columnIndex">L'index de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public uint GetUInt(int rowIndex, int columnIndex)
-        {
-            return (uint)GetObject(rowIndex, columnIndex);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son nom de colonne et de son index de ligne
-        /// </summary>
-        /// <param name="rowIndex">L'index de ligne du champ à récupérer</param>
-        /// <param name="columnLabel">Le nom de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public uint GetUInt(int rowIndex, string columnLabel)
-        {
-            return (uint)GetObject(rowIndex, columnLabel);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son index de colonne
-        /// </summary>
-        /// <param name="columnIndex">L'index de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public ushort GetUShort(int columnIndex)
-        {
-            return (ushort)GetObject(columnIndex);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son nom de colonne
-        /// </summary>
-        /// <param name="columnLabel">Le nom de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public ushort GetUShort(string columnLabel)
-        {
-            return (ushort)GetObject(columnLabel);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son index de colonne et de son index de ligne
-        /// </summary>
-        /// <param name="rowIndex">L'index de ligne du champ à récupérer</param>
-        /// <param name="columnIndex">L'index de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public ushort GetUShort(int rowIndex, int columnIndex)
-        {
-            return (ushort)GetObject(rowIndex, columnIndex);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son nom de colonne et de son index de ligne
-        /// </summary>
-        /// <param name="rowIndex">L'index de ligne du champ à récupérer</param>
-        /// <param name="columnLabel">Le nom de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public ushort GetUShort(int rowIndex, string columnLabel)
-        {
-            return (ushort)GetObject(rowIndex, columnLabel);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son index de colonne
-        /// </summary>
-        /// <param name="columnIndex">L'index de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public byte GetByte(int columnIndex)
-        {
-            return (byte)GetObject(columnIndex);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son nom de colonne
-        /// </summary>
-        /// <param name="columnLabel">Le nom de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public byte GetByte(string columnLabel)
-        {
-            return (byte)GetObject(columnLabel);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son index de colonne et de son index de ligne
-        /// </summary>
-        /// <param name="rowIndex">L'index de ligne du champ à récupérer</param>
-        /// <param name="columnIndex">L'index de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public byte GetByte(int rowIndex, int columnIndex)
-        {
-            return (byte)GetObject(rowIndex, columnIndex);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son nom de colonne et de son index de ligne
-        /// </summary>
-        /// <param name="rowIndex">L'index de ligne du champ à récupérer</param>
-        /// <param name="columnLabel">Le nom de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public byte GetByte(int rowIndex, string columnLabel)
-        {
-            return (byte)GetObject(rowIndex, columnLabel);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son index de colonne
-        /// </summary>
-        /// <param name="columnIndex">L'index de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public double GetDouble(int columnIndex)
-        {
-            return (double)GetObject(columnIndex);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son nom de colonne
-        /// </summary>
-        /// <param name="columnLabel">Le nom de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public double GetDouble(string columnLabel)
-        {
-            return (double)GetObject(columnLabel);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son index de colonne et de son index de ligne
-        /// </summary>
-        /// <param name="rowIndex">L'index de ligne du champ à récupérer</param>
-        /// <param name="columnIndex">L'index de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public double GetDouble(int rowIndex, int columnIndex)
-        {
-            return (double)GetObject(rowIndex, columnIndex);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son nom de colonne et de son index de ligne
-        /// </summary>
-        /// <param name="rowIndex">L'index de ligne du champ à récupérer</param>
-        /// <param name="columnLabel">Le nom de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public double GetDouble(int rowIndex, string columnLabel)
-        {
-            return (double)GetObject(rowIndex, columnLabel);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son index de colonne
-        /// </summary>
-        /// <param name="columnIndex">L'index de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public float GetFloat(int columnIndex)
-        {
-            return (float)GetObject(columnIndex);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son nom de colonne
-        /// </summary>
-        /// <param name="columnLabel">Le nom de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public float GetFloat(string columnLabel)
-        {
-            return (float)GetObject(columnLabel);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son index de colonne et de son index de ligne
-        /// </summary>
-        /// <param name="rowIndex">L'index de ligne du champ à récupérer</param>
-        /// <param name="columnIndex">L'index de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public float GetFloat(int rowIndex, int columnIndex)
-        {
-            return (float)GetObject(rowIndex, columnIndex);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son nom de colonne et de son index de ligne
-        /// </summary>
-        /// <param name="rowIndex">L'index de ligne du champ à récupérer</param>
-        /// <param name="columnLabel">Le nom de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public float GetFloat(int rowIndex, string columnLabel)
-        {
-            return (float)GetObject(rowIndex, columnLabel);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son index de colonne
-        /// </summary>
-        /// <param name="columnIndex">L'index de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public DateTime GetDateTime(int columnIndex)
-        {
-            return (DateTime)GetObject(columnIndex);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son nom de colonne
-        /// </summary>
-        /// <param name="columnLabel">Le nom de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public DateTime GetDateTime(string columnLabel)
-        {
-            return (DateTime)GetObject(columnLabel);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son index de colonne et de son index de ligne
-        /// </summary>
-        /// <param name="rowIndex">L'index de ligne du champ à récupérer</param>
-        /// <param name="columnIndex">L'index de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public DateTime GetDateTime(int rowIndex, int columnIndex)
-        {
-            return (DateTime)GetObject(rowIndex, columnIndex);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son nom de colonne et de son index de ligne
-        /// </summary>
-        /// <param name="rowIndex">L'index de ligne du champ à récupérer</param>
-        /// <param name="columnLabel">Le nom de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public DateTime GetDateTime(int rowIndex, string columnLabel)
-        {
-            return (DateTime)GetObject(rowIndex, columnLabel);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son index de colonne
-        /// </summary>
-        /// <param name="columnIndex">L'index de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public TimeSpan GetTimeSpan(int columnIndex)
-        {
-            return (TimeSpan)GetObject(columnIndex);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son nom de colonne
-        /// </summary>
-        /// <param name="columnLabel">Le nom de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public TimeSpan GetTimeSpan(string columnLabel)
-        {
-            return (TimeSpan)GetObject(columnLabel);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son index de colonne et de son index de ligne
-        /// </summary>
-        /// <param name="rowIndex">L'index de ligne du champ à récupérer</param>
-        /// <param name="columnIndex">L'index de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public TimeSpan GetTimeSpan(int rowIndex, int columnIndex)
-        {
-            return (TimeSpan)GetObject(rowIndex, columnIndex);
-        }
-
-        /// <summary>
-        /// Récupère la valeur d'un champ à partir de son nom de colonne et de son index de ligne
-        /// </summary>
-        /// <param name="rowIndex">L'index de ligne du champ à récupérer</param>
-        /// <param name="columnLabel">Le nom de colonne du champ à récupérer</param>
-        /// <returns>La valeur du champ</returns>
-        public TimeSpan GetTimeSpan(int rowIndex, string columnLabel)
-        {
-            return (TimeSpan)GetObject(rowIndex, columnLabel);
         }
     }
 }
