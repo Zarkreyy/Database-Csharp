@@ -31,7 +31,7 @@ sqlResult.Broadcast();
 // Affiche le nom de tous les utilisateurs
 for (int rowIndex = 0; rowIndex < sqlResult.GetRowCount(); rowIndex++)
 {
-    Console.WriteLine("username: " + sqlResult.GetObject(rowIndex, "username"));
+    Console.WriteLine("username: " + sqlResult.Get<string>(rowIndex, "username"));
 }
 
 // Exécute une requête qui ne retourne pas de données
