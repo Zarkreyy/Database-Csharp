@@ -8,8 +8,7 @@
 
 using MySqlConnector;
 
-
-namespace DatabaseCsharp.sql
+namespace DatabaseCsharp.Sql
 {
     /// <summary>
     /// Représente les informations de connexion à une base de données MySQL.

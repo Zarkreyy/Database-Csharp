@@ -9,7 +9,7 @@
 using System.Collections.Generic;
 using MySqlConnector;
 
-namespace DatabaseCsharp.sql
+namespace DatabaseCsharp.Sql
 {
     /// <summary>
     /// Classe statique permettant la gestion des connexions à la base de données MySQL ainsi que l'exécution des requêtes SQL.

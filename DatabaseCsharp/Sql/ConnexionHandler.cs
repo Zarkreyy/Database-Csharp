@@ -9,7 +9,7 @@
 using System;
 using MySqlConnector;
 
-namespace DatabaseCsharp.sql
+namespace DatabaseCsharp.Sql
 {
     /// <summary>
     /// Classe permettant de gérer la connexion à une base de données MySQL.

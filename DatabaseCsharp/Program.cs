@@ -8,7 +8,7 @@
 
 using System;
 using System.Collections.Generic;
-using DatabaseCsharp.sql;
+using DatabaseCsharp.Sql;
 
 namespace DatabaseCsharp
 {
